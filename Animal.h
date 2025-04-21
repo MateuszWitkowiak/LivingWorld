@@ -9,4 +9,6 @@ class Animal : public Organism
 		Animal(int power, Position position);
 		Animal();
 
+	private:
+		Position lastPosition;
 };

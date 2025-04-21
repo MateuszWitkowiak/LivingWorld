@@ -8,4 +8,4 @@ Animal::Animal(int power, Position position) : Organism(power, position)
 Animal::Animal() : Organism()
 {
 	setSpecies("A");
-}
+}			
