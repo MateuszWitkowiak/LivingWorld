@@ -1,5 +1,6 @@
 #include "Organism.h"
 #include <iostream>
+#include "World.h"
 
 Organism::Organism(int power, Position position)
 {
@@ -92,4 +93,15 @@ void Organism::setSpecies(string spec)
 void Organism::addAncestor(int birth, int death)
 {
 	ancestryHistory.push_back({birth, death});
+}
+
+void Organism::consequences(Organism& attackingOrganism, World& world)
+{
+	if (this->getPosition() == attackingOrganism.getPosition()) {
+		if (this->getPower() >= attackingOrganism.getPower()) {
+			world.removeOrganism(attackingOrganism);
+		} else {
+			world.removeOrganism(*this);
+		}
+	}
 }

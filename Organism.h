@@ -30,7 +30,7 @@ public:
 	void setSpecies(string spec);
 	void addAncestor(int birth, int death);
 	string toString();
-
 	virtual void move(int dx, int dy);
 	virtual void ancestralHistory();
+	void consequences(Organism& attackingOrganism, World& world);
 };

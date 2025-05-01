@@ -21,4 +21,8 @@ public:
 
 	double distance(Position position);
 	void move(int dx, int dy);
+	bool Position::operator==(const Position& other) const
+	{
+		return this->x == other.x && this->y == other.y;
+	}
 };

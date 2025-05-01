@@ -11,4 +11,5 @@ class Animal : public Organism
 
 	private:
 		Position lastPosition;
+		void move(int posX, int posY);
 };
