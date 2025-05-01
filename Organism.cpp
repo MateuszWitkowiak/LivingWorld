@@ -105,3 +105,43 @@ void Organism::consequences(Organism& attackingOrganism, World& world)
 		}
 	}
 }
+
+int Organism::getInitiative()
+{
+	return this->initiative;
+}
+
+int Organism::getLiveLength()
+{
+	return this->liveLength;
+}
+
+int Organism::getpowerToReproduce()
+{
+	return this->powerToReproduce;
+}
+
+string Organism::getSign()
+{
+	return this->sign;
+}
+
+void Organism::setInitiative(int init)
+{
+	this->initiative = init;
+}
+
+void Organism::setLiveLength(int length)
+{
+	this->liveLength = length;
+}
+
+void Organism::setPowerToReproduce(int power)
+{
+	this->powerToReproduce = power;
+}
+
+void Organism::setSign(string sign)
+{
+	this->sign = sign;
+}

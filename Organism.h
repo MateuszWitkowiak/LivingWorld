@@ -12,6 +12,10 @@ private:
 	int power;
 	Position position;
 	string species;
+	string sign;
+	int initiative;
+	int liveLength;
+	int powerToReproduce;
 	std::vector<std::pair<int, int>> ancestryHistory;
 	
 public:
@@ -22,6 +26,14 @@ public:
 	~Organism();
 	Organism& operator=(const Organism& other);
 	Organism& operator=(Organism&& other) noexcept;
+	int getInitiative();
+	int getLiveLength();
+	int getpowerToReproduce();
+	string getSign();
+	void setInitiative(int initiative);
+	void setLiveLength(int liveLength);
+	void setPowerToReproduce(int powerToReproduce);
+	void setSign(string sign);
 	int getPower();
 	void setPower(int power);
 	Position getPosition();
@@ -31,6 +43,5 @@ public:
 	void addAncestor(int birth, int death);
 	string toString();
 	virtual void move(int dx, int dy);
-	virtual void ancestralHistory();
-	void consequences(Organism& attackingOrganism, World& world);
+	virtual void consequences(Organism& attackingOrganism, World& world);
 };
