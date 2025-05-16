@@ -1,6 +1,12 @@
 #include "World.h"
 #include <fstream>
 #include <algorithm>
+#include <iostream>
+#include <Grass.h>
+#include <Wolf.h>
+#include <Toadstool.h>
+#include <Dandelion.h>
+#include <Sheep.h>
 
 string World::getOrganismFromPosition(int x, int y)
 {
@@ -53,11 +59,13 @@ int World::getTurn() { return this->turn; }
 
 void World::addOrganism(unique_ptr<Organism> organism)
 {
+    std::cout << "Adding organism: " << organism->getSpecies() 
+              << " at position: " << organism->getPosition().toString() << std::endl;
     organisms.push_back(std::move(organism));
 }
 
-void World::makeTurn()
-{
+
+void World::makeTurn() {
     vector<Position> newPositions;
     int numberOfNewPositions;
     int randomIndex;
@@ -68,11 +76,26 @@ void World::makeTurn()
         numberOfNewPositions = newPositions.size();
         if (numberOfNewPositions > 0) {
             randomIndex = rand() % numberOfNewPositions;
+            std::cout << "Organism " << org->getSpecies() << " moves from " 
+                      << org->getPosition().toString() << " to " 
+                      << newPositions[randomIndex].toString() << std::endl;
             org->setPosition(newPositions[randomIndex]);
+        }
+    }
+
+    // Sprawdzanie konsekwencji
+    for (size_t i = 0; i < organisms.size(); ++i) {
+        for (size_t j = i + 1; j < organisms.size(); ++j) {
+            std::cout << "Checking consequences between " 
+                      << organisms[i]->getSpecies() << " and " 
+                      << organisms[j]->getSpecies() << std::endl;
+            organisms[i]->consequences(*organisms[j], *this);
+            organisms[j]->consequences(*organisms[i], *this);
         }
     }
     turn++;
 }
+
 
 void World::writeWorld(string fileName)
 {
@@ -101,6 +124,10 @@ void World::writeWorld(string fileName)
     }
 }
 
+#include "Grass.h"
+#include "Sheep.h"
+// Dodaj też pozostałe klasy: Dandelion, Toadstool itd.
+
 void World::readWorld(string fileName)
 {
     fstream my_file;
@@ -115,7 +142,9 @@ void World::readWorld(string fileName)
         this->turn = result;
         my_file.read((char*)&result, sizeof(int));
         int orgs_size = result;
+
         vector<unique_ptr<Organism>> new_organisms;
+
         for (int i = 0; i < orgs_size; i++) {
             int power;
             my_file.read((char*)&result, sizeof(int));
@@ -123,28 +152,50 @@ void World::readWorld(string fileName)
 
             int pos_x;
             my_file.read((char*)&result, sizeof(int));
-            pos_x = result;
             int pos_y;
             my_file.read((char*)&result, sizeof(int));
-            pos_y = result;
             Position pos{ pos_x, pos_y };
 
             int s_size;
             my_file.read((char*)&result, sizeof(int));
-            s_size = result;
-
             string species;
             species.resize(s_size);
             my_file.read(&species[0], s_size);
 
-            auto org = make_unique<Organism>(power, pos);
-            org->setSpecies(species);
-            new_organisms.push_back(std::move(org));
+            // 🔧 Stwórz odpowiedni organizm na podstawie species:
+            if (species == "Grass") {
+                auto org = make_unique<Grass>(pos);
+                new_organisms.push_back(std::move(org));
+            }
+            else if (species == "Sheep") {
+                auto org = make_unique<Sheep>(pos);
+                new_organisms.push_back(std::move(org));
+            }
+
+            else if (species == "Wolf") {
+                auto org = make_unique<Wolf>(pos);
+                new_organisms.push_back(std::move(org));
+            }
+
+            else if (species == "Toadstool") {
+                auto org = make_unique<Toadstool>(pos);
+                new_organisms.push_back(std::move(org));
+            }
+            else if (species == "Dandelion") {
+                auto org = make_unique<Dandelion>(pos);
+                new_organisms.push_back(std::move(org));
+            }
+            
+            else {
+                std::cout << "Nieznany gatunek: " << species << ", tworzenie domyślnego organizmu NIE jest wspierane.\n" << std::endl;
+            }
         }
+
         this->organisms = std::move(new_organisms);
         my_file.close();
     }
 }
+
 
 string World::toString()
 {
@@ -154,6 +205,9 @@ string World::toString()
     for (int wY = 0; wY < getWorldY(); ++wY) {
         for (int wX = 0; wX < getWorldX(); ++wX) {
             spec = getOrganismFromPosition(wX, wY);
+            if (!spec.empty()) {
+                std::cout << "At position (" << wX << "," << wY << "), species: " << spec << std::endl;
+            }
             result += spec.empty() ? std::string(1, separator) : spec;
         }
         result += "\n";
@@ -161,9 +215,9 @@ string World::toString()
     return result;
 }
 
+
 void World::removeOrganism(Organism& organismToRemove)
 {
-	auto it = std::find(organisms.begin(), organisms.end(), organismToRemove);
 	auto it = std::find_if(organisms.begin(), organisms.end(),
         [&organismToRemove](const std::unique_ptr<Organism>& org) {
             return org.get() == &organismToRemove;

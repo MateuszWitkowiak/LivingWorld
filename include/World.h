@@ -6,6 +6,7 @@
 #include "Organism.h"
 
 using namespace std;
+class Organism;
 
 class World
 {
@@ -31,7 +32,7 @@ public:
 
     int getTurn();
 
-    void addOrganism(unique_ptr<Organism> organism);
+    void addOrganism(unique_ptr<Organism> organisms);
     vector<Position> getVectorOfFreePositionsAround(Position position);
     void makeTurn();
 

@@ -5,4 +5,5 @@ Wolf::Wolf(Position position) : Animal(8, position) {
     setLiveLength(20);
     setPowerToReproduce(16);
     setSign("W");
+    setSpecies("Wolf");
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Animal.h"
 #include "World.h"
 
